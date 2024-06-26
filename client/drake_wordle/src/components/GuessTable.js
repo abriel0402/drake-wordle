@@ -1,6 +1,6 @@
 import React from "react";
 import "../index.css";
-import images from "../img/images.js"
+import images from "../img/images.js";
 
 function GuessTable({ guesses }) {
   console.log(guesses);
@@ -40,10 +40,15 @@ function GuessTable({ guesses }) {
               <td
                 className={`h-12 px-4 text-lg text-center align-middle overflow-hidden overflow-ellipsis whitespace-nowrap signal-${guess.signals[1]}`}
               >
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                  
-                  <img src={images[guess.album]} style={{ height: '65px' }} />
-                  
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100%",
+                  }}
+                >
+                  <img src={images[guess.album]} style={{ height: "65px" }} />
                 </div>
               </td>
               <td
