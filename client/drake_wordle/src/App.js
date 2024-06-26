@@ -3,7 +3,7 @@ import SongSearch from "./components/SongSearch";
 
 function App() {
   return (
-    <div className="flex flex-col place-items-center min-h-screen bg-zinc-900 overflow-auto">
+    <div className="flex flex-col place-items-center min-h-screen bg-zinc-900">
       <h1 className="text-3xl font-bold underline">
         Drizzle
       </h1>

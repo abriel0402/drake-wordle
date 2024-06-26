@@ -22,11 +22,11 @@ body {
 }
 
 .signal-1 {
-  color: yellow;
+  background-color: #ccab17;
 }
 
 .signal-2 {
-  color: green;
+  background-color: green;
 }
 /* Firefox */
 * {
