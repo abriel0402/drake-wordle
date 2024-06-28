@@ -42,21 +42,32 @@ def songSearch(request):
 def getSeconds(trackLength):
     mins, seconds = map(int, trackLength.split(':'))
     return mins * 60 + seconds
+
 def evaluateGuess(songData):
     signals = ["0", "0", "0", "0", "0"]
+    #arrows = ["", "", "", "", ""]
     print(songData["name"])
     print(gameSong["name"])
-    if songData["name"] == gameSong["name"]:
-        print('ding ding')
+    
+    if songData["name"] == gameSong["name"]: # detect if song is correctly guessed
+        print('game over you win')
         signals = [2, 2, 2, 2, 2]
         print(signals)
         return signals
-    if songData["album"] == gameSong["album"]:
+    if songData["album"] == gameSong["album"]: # detect if album was guessed
         signals[1] = 2
-    if songData["trackNum"] == gameSong["trackNum"]:
-        signals[2] = 2
+
+
+    if songData["trackNum"] == gameSong["trackNum"]: # detect track number
+        signals[2] = 2 
     elif int(songData["trackNum"]) == int(gameSong["trackNum"]) - 2 or int(songData["trackNum"]) == int(gameSong["trackNum"]) - 1 or int(songData["trackNum"]) == int(gameSong["trackNum"]) + 2 or int(songData["trackNum"]) == int(gameSong["trackNum"]) + 1:
         signals[2] = 1
+    #if int(songData["trackNum"]) < int(gameSong["trackNum"]):
+    #    arrows[2] = "^"
+   # elif int(songData["trackNum"]) > int(gameSong["trackNum"]):
+    #    arrows[2] = "v"
+
+
     if songData["trackLength"] == gameSong["trackLength"]:
         signals[3] = 2
     else:
@@ -78,7 +89,7 @@ def evaluateGuess(songData):
 
     
 
-    return signals
+    return signals#, arrows
 
 @csrf_exempt
 def makeGuess(request):
@@ -100,5 +111,7 @@ def makeGuess(request):
             songData["features"] = "No features"
         signals = evaluateGuess(songData)
         songData["signals"] = signals
+        #songData["arrows"] = arrows
         print(songData["signals"])
+        #print(songData["arrows"])
         return JsonResponse(songData, status=200)
