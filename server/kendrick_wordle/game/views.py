@@ -35,7 +35,9 @@ def songSearch(request):
         allSongs = list(Song.objects.all().values())
 
         for song in allSongs:
-            if (text.lower() in song['name'].lower() and len(text) < len(song["name"]) and len(text) > 1):
+            if len(text) == 1 and text.lower() == song["name"].lower():
+                songsToReturn.append(song)
+            elif (text.lower() in song['name'].lower() and len(text) < len(song["name"]) and len(text) > 1):
                 songsToReturn.append(song)
     return JsonResponse(songsToReturn, safe=False)
 
@@ -45,7 +47,7 @@ def getSeconds(trackLength):
 
 def evaluateGuess(songData):
     signals = ["0", "0", "0", "0", "0"]
-    #arrows = ["", "", "", "", ""]
+    arrows = ["", "", "", "", ""]
     print(songData["name"])
     print(gameSong["name"])
     
@@ -53,7 +55,7 @@ def evaluateGuess(songData):
         print('game over you win')
         signals = [2, 2, 2, 2, 2]
         print(signals)
-        return signals
+        return signals, arrows
     if songData["album"] == gameSong["album"]: # detect if album was guessed
         signals[1] = 2
 
@@ -62,13 +64,13 @@ def evaluateGuess(songData):
         signals[2] = 2 
     elif int(songData["trackNum"]) == int(gameSong["trackNum"]) - 2 or int(songData["trackNum"]) == int(gameSong["trackNum"]) - 1 or int(songData["trackNum"]) == int(gameSong["trackNum"]) + 2 or int(songData["trackNum"]) == int(gameSong["trackNum"]) + 1:
         signals[2] = 1
-    #if int(songData["trackNum"]) < int(gameSong["trackNum"]):
-    #    arrows[2] = "^"
-   # elif int(songData["trackNum"]) > int(gameSong["trackNum"]):
-    #    arrows[2] = "v"
+    if int(songData["trackNum"]) < int(gameSong["trackNum"]):
+        arrows[2] = "^"
+    elif int(songData["trackNum"]) > int(gameSong["trackNum"]):
+        arrows[2] = "v"
 
 
-    if songData["trackLength"] == gameSong["trackLength"]:
+    if songData["trackLength"] == gameSong["trackLength"]: # detect track length
         signals[3] = 2
     else:
         guessSeconds = getSeconds(songData["trackLength"])
@@ -76,8 +78,14 @@ def evaluateGuess(songData):
         realSeconds = getSeconds(gameSong["trackLength"])
         if abs(guessSeconds - realSeconds) <= 45:
             signals[3] = 1
+        if guessSeconds < realSeconds:
+            arrows[3] = "^"
+        elif guessSeconds > realSeconds:
+            arrows[3] = "v"
 
-    if songData["features"] == gameSong["features"]:
+
+
+    if songData["features"] == gameSong["features"]: # detect features
         signals[4] = 2
     else:
         song = Song.objects.filter(name__icontains=songData["name"]).first()
@@ -89,7 +97,7 @@ def evaluateGuess(songData):
 
     
 
-    return signals#, arrows
+    return signals, arrows
 
 @csrf_exempt
 def makeGuess(request):
@@ -97,8 +105,10 @@ def makeGuess(request):
     if request.method == "POST":
         data = json.loads(request.body)
         guess = data["guess"]
+        print("guess below")
         print(guess)
-        song = Song.objects.filter(name__icontains=guess).first()
+
+        song = Song.objects.filter(name__iexact=guess).first()
         songData = {
             "name": song.name,
             "album": song.album,
@@ -109,9 +119,9 @@ def makeGuess(request):
 
         if songData["features"] == "":
             songData["features"] = "No features"
-        signals = evaluateGuess(songData)
+        signals, arrows = evaluateGuess(songData)
         songData["signals"] = signals
-        #songData["arrows"] = arrows
+        songData["arrows"] = arrows
         print(songData["signals"])
-        #print(songData["arrows"])
+        print(songData["arrows"])
         return JsonResponse(songData, status=200)

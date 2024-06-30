@@ -55,11 +55,21 @@ function GuessTable({ guesses }) {
                 className={`h-12 px-4 text-lg text-center align-middle overflow-hidden overflow-ellipsis whitespace-nowrap signal-${guess.signals[2]}`}
               >
                 {guess.trackNum}
+                {guess.arrows[2] && (
+                  <span style={{ marginLeft: "5px" }}>
+                    {guess.arrows[2] === "^" ? "⬆️" : "⬇️"}
+                  </span>
+                )}
               </td>
               <td
                 className={`h-12 px-4 text-lg text-center align-middle overflow-hidden overflow-ellipsis whitespace-nowrap signal-${guess.signals[3]}`}
               >
                 {guess.trackLength}
+                {guess.arrows[3] && (
+                  <span style={{ marginLeft: "5px" }}>
+                    {guess.arrows[3] === "^" ? "⬆️" : "⬇️"}
+                  </span>
+                )}
               </td>
               <td
                 className={`h-12 px-4 text-lg text-center align-middle overflow-hidden overflow-ellipsis whitespace-nowrap signal-${guess.signals[4]}`}
