@@ -1,10 +1,16 @@
 import axios from "axios";
 import React, { useState } from "react";
 import GuessTable from "./GuessTable";
+import PopUp from "./PopUp";
 
 function SongSearch() {
   const [songs, setSongs] = useState([]);
   const [guesses, setGuesses] = useState([]);
+  const [gameOver, setGameOver] = useState(false);
+  const [correctSong, setCorrectSong] = useState([]);
+
+
+
 
   const handleInputChange = (event) => {
     const text = event.target.value;
@@ -30,6 +36,10 @@ function SongSearch() {
     axios
       .post("/make-guess/", { guess })
       .then((response) => {
+        if (response.data.signals.every(signal => signal === 2)) {
+          setGameOver(true);
+          setCorrectSong(response.data);
+        }
         console.log(response.data);
         setGuesses([...guesses, response.data]);
         document.getElementById("search").value = "";
@@ -43,8 +53,6 @@ function SongSearch() {
     <div className="flex items-center justify-center h-screen">
       <div className="w-full max-w-screen-lg mx-auto relative">
         <div className="flex justify-center">
-          {" "}
-          {/* Center the search bar horizontally */}
           <input
             type="text"
             id="search"
@@ -80,6 +88,11 @@ function SongSearch() {
         <div className="mt-4 h-96">
           <GuessTable guesses={guesses} />
         </div>
+        <PopUp
+          show={gameOver}
+          onClose={() => setGameOver(false)}
+          song={correctSong}
+        />
       </div>
     </div>
   );

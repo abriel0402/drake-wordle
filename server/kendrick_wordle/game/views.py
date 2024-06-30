@@ -35,9 +35,14 @@ def songSearch(request):
         allSongs = list(Song.objects.all().values())
 
         for song in allSongs:
-            if len(text) == 1 and text.lower() == song["name"].lower():
+            text = text.replace(".", "")
+            #print(text)
+            songName = song["name"]
+            songName = songName.replace(".", "")
+            #print(test)
+            if len(text) == 1 and text.lower() == songName.lower():
                 songsToReturn.append(song)
-            elif (text.lower() in song['name'].lower() and len(text) < len(song["name"]) and len(text) > 1):
+            elif (text.lower() in songName.lower() and len(text) < len(songName) and len(text) > 1):
                 songsToReturn.append(song)
     return JsonResponse(songsToReturn, safe=False)
 

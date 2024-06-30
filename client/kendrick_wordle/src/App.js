@@ -1,6 +1,8 @@
 import "./App.css";
 import SongSearch from "./components/SongSearch";
 import Nav from "./components/Nav";
+import Footer from "./components/Footer";
+
 function App() {
   return (
     <div className="flex flex-col place-items-center min-h-screen bg-zinc-900">
@@ -9,7 +11,7 @@ function App() {
         <SongSearch />
       </div>
       <div>
-       
+        <Footer />
       </div>
     </div>
   );
